@@ -1,0 +1,10 @@
+{
+  "main": "index.html",
+  "name": "Enigma",
+  "devDependencies": {
+    "grunt": "latest",
+    "grunt-contrib-copy": "^0.7.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-node-webkit-builder": "latest"
+  }
+}
