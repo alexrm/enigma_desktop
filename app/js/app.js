@@ -11,7 +11,7 @@ var app = function() {
 					localStorage.setItem('profile', JSON.stringify(profile));
 					ajax.get('pages/main.html', function(data){ 
 						document.body.innerHTML = data;
-						$('#user_name').innerHTML = profile.firstName + " " + profile.lastName;
+						$('#user_name').innerHTML = profile.first_name + " " + profile.last_name;
 						$('#user_pic').src = profile.photo_100;
 					});
 				} else {
