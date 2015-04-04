@@ -22,6 +22,13 @@ html, body { height: 100%; width: 100%; margin: 0;  }
 	}
 }
 
+.im_history_not_selected {
+	padding-top: 200px;
+	padding-left: 370px;
+	margin: 0 auto;
+	width: 400px;
+	height: 200px;
+}
 
 
 .login_view_wrap{ 
