@@ -16,6 +16,14 @@ html, body { height: 100%; width: 100%; margin: 0;  }
 	  width: 100%!important;
 	}
 }
+@media (max-width: 1010px){
+	.im_chats_wrap{ 
+		height: calc(100vh - 130px)!important; 
+	}
+}
+
+
+
 .login_view_wrap{ 
 	-webkit-box-align: center;
 	-moz-box-align: center;
@@ -397,7 +405,7 @@ body {
 	text-overflow: ellipsis;
 }
 .im_chats_wrap{ 
-	height: calc(100vh - 200px);
+	height: calc(100vh - 130px);
 	overflow: hidden;
 }
 .im_dialog{
