@@ -7,9 +7,10 @@ var app = function() {
 			vk.token = getToken();
 			this.check(function(res) {
 				if (res && res.response) {
-					localStorage.setItem('profile', JSON.stringfy(res.response[0]));
+					localStorage.setItem('profile', JSON.stringify(res.response[0]));
 					ajax.get('pages/main.html', function(data){ 
 						document.body.innerHTML = data;
+
 					});
 				} else {
 					vk.auth();
