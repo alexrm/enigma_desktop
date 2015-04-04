@@ -2,18 +2,22 @@ var app = function() {
 	function getToken() {return localStorage.getItem('access_token')};
 
 	return {
-		token: null,
+		user: null,
 		init: function() {
-			vk.showAuth();
-			
-			if (!(this.token = getToken()) || !this.check()) {
-				vk.auth();
-			} else {
-				alert('it\'s work');
-			}
+			vk.token = getToken();
+			this.check(function(res) {
+				if (res && res.response) {
+					localStorage.setItem('profile', JSON.stringfy(res.response[0]));
+					ajax.get('pages/main.html', function(data){ 
+						document.body.innerHTML = data;
+					});
+				} else {
+					vk.auth();
+				}
+			});
 		},
-		check: function() {
-
+		check: function(cb) {
+			vk.api('users.get', {fields:"photo_100"}, cb);
 		}
 	}
 }
