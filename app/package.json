@@ -1,0 +1,15 @@
+{
+  "name": "Enigma",
+  "main": "index.html",
+  "version": "0.1.0",
+  "window": {
+    "title": "Books",
+    "toolbar": false,
+    "frame": true,
+    "width": 800,
+    "height": 550,
+    "min_width": 800,
+    "min_height": 550,
+    "position": "center"
+  }
+}
