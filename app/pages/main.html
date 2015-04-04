@@ -36,20 +36,8 @@
 
 		</div>
 		<div class="im_chats_wrap">
-			<div class="im_dialogs_wrap" ng-controller="AppImDialogsController">
-				<div ng-repeat="dialog in dialogs">
-					<div class="im_dialog_wrap" ng-mousedown="dialogSelect(dialog.peer.peer.id);">
-						<div class="im_dialog">
-							<div class="im_dialog_meta">{{dialog.date}}</div>
-							<div class="im_dialog_photo" ng-bind-html="dialog.pic"> 
-							</div>
-							<div class="im_dialog_message_wrap">
-								<div class="im_diaog_peer">{{dialog.peer.title}}</div>
-								<div class="im_dialog_message">{{dialog.text}}</div> 
-							</div>							
-						</div>
-					</div> 
-				</div> 
+			<div class="im_dialogs_wrap" id="dialogs">
+ 
 			</div>		
 				<div class="im_history_wrap" ng-controller="AppIMChat">
 					<div class="im_history_chat_wrap" scroll-glue>
