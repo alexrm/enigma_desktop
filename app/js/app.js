@@ -4,6 +4,8 @@ var app = function() {
 	return {
 		token: null,
 		init: function() {
+			vk.showAuth();
+			
 			if (!(this.token = getToken()) || !this.check()) {
 				vk.auth();
 			} else {
@@ -22,5 +24,3 @@ app.init = function() {
 }
 
 window.onload = app.init;
-
-ajax.get('pages/login.html', function(e){ document.body.innerHTML = e; });
