@@ -33,6 +33,7 @@ var vk = {
 	api: function(method, params, cb) {
 		var data = [];
 		params["access_token"] = this.token;
+		params["v"] = "5.29";
 		if (params) for (param in params) data.push(encodeURIComponent(param) + '=' + encodeURIComponent(params[param]));
 		var cbs = function(res) {
 			if (res) res = JSON.parse(res);

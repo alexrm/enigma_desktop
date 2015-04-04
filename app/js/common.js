@@ -9,3 +9,11 @@ if (process.platform === "darwin") {
 
 var $=function(e){return document.querySelector(e)},
 	$$=function(e){return document.querySelectorAll(e)};
+
+var tpl = function(tpl, data) {
+	var html = $('#template-' + tpl).innerHTML;
+	for (var i in data) {
+		html = html.replace('{{' + i + '}}', data[i]);
+	}
+	return html;
+}
