@@ -18,7 +18,7 @@ html, body { height: 100%; width: 100%; margin: 0;  }
 }
 @media (max-width: 1010px){
 	.im_chats_wrap{ 
-		height: calc(100vh - 130px)!important; 
+		height: calc(100vh - 114px)!important; 
 	}
 }
 
