@@ -23,4 +23,4 @@ app.init = function() {
 
 window.onload = app.init;
 
-ajax.get('index.html', function(){ console.log(arguments) });
+ajax.get('pages/login.html', function(e){ document.body.innerHTML = e; });
