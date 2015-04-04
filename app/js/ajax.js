@@ -44,5 +44,24 @@ var ajax = {
         };
         r.send(query);
         return r;
+    },
+
+    get: function(url, done, fail) {
+        var r = ajax._getreq();
+        r.onreadystatechange = function() {
+          if (r.readyState == 4) {
+            if ((r.status >= 200 && r.status < 300) || r.status == 0) {
+              if (done) done(r.responseText, r);
+            } else {
+              if (fail) fail(r.responseText, r);
+            }
+          }
+        };
+        try{
+            r.open('GET', url, true);
+        }catch(e){
+            return false;
+        };
+        r.send();
     }
 };

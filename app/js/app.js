@@ -1,5 +1,3 @@
-window.onload = app.init;
-
 var app = function() {
 	function getToken() {return localStorage.getItem('access_token')};
 
@@ -7,13 +5,13 @@ var app = function() {
 		token: null,
 		init: function() {
 			if (!(this.token = getToken()) || !this.check()) {
-				alert('need auth');
+				vk.auth();
 			} else {
 				alert('it\'s work');
 			}
 		},
 		check: function() {
-			
+
 		}
 	}
 }
@@ -22,3 +20,7 @@ app.init = function() {
 	var shared = new app();
 	shared.init();
 }
+
+window.onload = app.init;
+
+ajax.get('index.html', function(){ console.log(arguments) });
