@@ -15,5 +15,5 @@ var tpl = function(tpl, data) {
 	for (var i in data) {
 		html = html.replace('{{' + i + '}}', data[i]);
 	}
-	return html;
+	return html.trim();
 }

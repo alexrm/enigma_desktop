@@ -11,22 +11,33 @@
 	<link href="css/app.css" rel="stylesheet"> 
 	<link href='http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,500italic,700,700italic,900,900italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
 	  
+
 	<script src="js/common.js"></script>
 	<script src="js/ajax.js"></script>
 	<script src="js/vk.js"></script>
 	<script src="js/app.js"></script>
 	<script type="text/html" id="template-dialog">
-		<div class="im_dialog_wrap" ng-mousedown="dialogSelect(dialog.peer.peer.id);">
-		<div class="im_dialog">
-		<div class="im_dialog_meta">{{date}}</div>
-		<div class="im_dialog_photo" ng-bind-html="dialog.pic">
-			<img src="{{photo}}" class="im_dialog_photo"> 
+		<div class="im_dialog_wrap" id="dialog_{{user_id}}">
+			<div class="im_dialog">
+				<div class="im_dialog_meta">{{date}}</div>
+				<div class="im_dialog_photo">
+					<img src="{{photo}}" class="im_dialog_photo"> 
+				</div>
+				<div class="im_dialog_message_wrap">
+					<div class="im_diaog_peer">{{name}}</div>
+					<div class="im_dialog_message">{{body}}</div> 
+				</div> 
+			</div>
 		</div>
-			<div class="im_dialog_message_wrap">
-			<div class="im_diaog_peer">{{name}}</div>
-			<div class="im_dialog_message">{{body}}</div> 
-		</div> 
-		</div>
+	</script>
+	<script type="text/html" id="template-msg">
+		<div class="im_message">
+			<div class="im_message_meta">{{date}}</div>
+			<div class="im_dialog_photo"><img class="im_dialog_photo" src="{{photo}}"></div>
+			<div class="im_message_wrap">
+				<div class="im_message_peer">{{name}}</div>
+				<div class="im_message_text">{{text}} </div> 
+			</div>		
 		</div>
 	</script>
 </head>
