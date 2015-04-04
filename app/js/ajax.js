@@ -2,15 +2,15 @@ var ajax = {
     _init : function(){
         var r = false;
         if (window.XMLHttpRequest){
-            SimpleAjax._req = function(){ return new XMLHttpRequest(); }
+            ajax._req = function(){ return new XMLHttpRequest(); }
             return;
         }else if (window.ActiveXObject){
             try{
-                SimpleAjax._req = function(){ return new ActiveXObject('Msxml2.XMLHTTP'); };
+                ajax._req = function(){ return new ActiveXObject('Msxml2.XMLHTTP'); };
                 return;
             }catch(e){
                 try{
-                    SimpleAjax._req = function(){ return new ActiveXObject('Microsoft.XMLHTTP'); };
+                    ajax._req = function(){ return new ActiveXObject('Microsoft.XMLHTTP'); };
                     return;
                 }catch(f){
                     
@@ -19,11 +19,11 @@ var ajax = {
         };
     },
     _getreq : function(){
-        if (!SimpleAjax._req) SimpleAjax._init();
-        return SimpleAjax._req();
+        if (!ajax._req) ajax._init();
+        return ajax._req();
     },
     post : function(url, query, done, fail, urlonly){
-        var r = SimpleAjax._getreq();
+        var r = ajax._getreq();
         r.onreadystatechange = function() {
           if (r.readyState == 4) {
             if (r.status >= 200 && r.status < 300) {
@@ -44,5 +44,24 @@ var ajax = {
         };
         r.send(query);
         return r;
+    },
+
+    get: function(url, done, fail) {
+        var r = ajax._getreq();
+        r.onreadystatechange = function() {
+          if (r.readyState == 4) {
+            if ((r.status >= 200 && r.status < 300) || r.status == 0) {
+              if (done) done(r.responseText, r);
+            } else {
+              if (fail) fail(r.responseText, r);
+            }
+          }
+        };
+        try{
+            r.open('GET', url, true);
+        }catch(e){
+            return false;
+        };
+        r.send();
     }
 };
