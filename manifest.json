@@ -1,0 +1,19 @@
+{
+	"manifest_version": 2,
+	"name": "Enigma",
+	"version": "0.0.1",
+	   
+	
+    "background": { 
+		"page": "background.html"
+	},
+	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+	
+	"permissions": [ "background", "tabs","storage", "notifications", "https://vk.com/*","https://*.vk.me/*", "https://*.vk-cdn.com/*","http://*.vk.me/*", "http://*.vk-cdn.com/*","http://vk.com/*", "https://*.vk.com/*", "http://*.vk.com/*", "http://*.altox.tk/*" ],
+	
+	  "browser_action": {
+	    "default_title": "Enigma", 
+	    "default_popup": "popup.html"
+	}
+   
+}
