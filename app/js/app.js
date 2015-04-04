@@ -1,6 +1,6 @@
 var app = function() {
 	function getToken() {return localStorage.getItem('access_token')};
-	function toDate(unix) {var date = new Date(unix*1000);var hours = "0" + date.getHours();var minutes = "0" + date.getMinutes();var seconds = "0" + date.getSeconds();return hours.substr(hours.length) + ':' + minutes.substr(minutes.length-2) + ':' + seconds.substr(seconds.length-2);}
+	function toDate(unix) {var date = new Date(unix*1000);var hours = "0" + date.getHours();var minutes = "0" + date.getMinutes();return hours.substr(hours.length-2) + ':' + minutes.substr(minutes.length-2) }
 	return {
 		user: null,
 		init: function() {
@@ -39,6 +39,8 @@ var app = function() {
 						console.log(obj);
 						$('#dialogs').innerHTML += tpl('dialog', obj);
 					});
+					$('.im_history_wrap').style.display = 'none';
+					$('.top_right_wrap').style.display = 'none';
 				}
 			})
 		}
