@@ -85,58 +85,45 @@ var app = function() {
 					var id = update[3];
 					var msg = update[6];
 					var time = update[4];
+
+					var keyStore = _this.secured[id];
 					if (msg.substr(0, 10) == 'ECDH_BEGIN') {
-						return;
-					}
-					if (msg.substr(0, 15) == 'ENCRYPTED_BEGIN') {
-						var keyStore = _this.secured[update[3]];
+						msg = msg.substr(10).split("<br>")[0];
+						if ((update[2] & 2)) {
+							if (keyStore && keyStore.secretKey) {
+								msg = tpl('service', 'Keys aproved.');
+							} else if (keyStore) {
+								msg = tpl('service', 'Waiting keys ...');
+							}
+						} else {
+							if (keyStore) {
+								keyStore.getPartnerKey(msg);
+								msg = tpl('service', {msg:"Key genered!"});
+							} else {
+								_this.secured[id] = new VKKeyExchanging(id);	
+								_this.secured[id].sendMyPublicKey();		
+								_this.secured[id].getPartnerKey(msg);
+								msg = tpl('service', {msg:"Key genered!"});
+							}
+						}
+					} else if (msg.substr(0, 15) == 'ENCRYPTED_BEGIN') {
 						if (keyStore && keyStore.secretKey) {
 							msg = msg.substr(15).split("<br>")[0];
 							try {
 								msg = tpl('encrypted', {msg:CryptoJS.AES.decrypt(atob(msg), keyStore.secretKey).toString(CryptoJS.enc.Utf8)});
 							} catch (_) {
-								return;
+								
 							}
-						} else {
-							return;
-						}
+						}	
 					}
+
+
+
 					_this.renderMsg(id, msg, time, (update[2] & 2));
 				}
 			});
 		},
 		renderMsg: function(uid, msg, time, out) {
-			var keyStore = this.secured[uid];
-			if (msg.substr(0, 10) == 'ECDH_BEGIN') {
-				msg = msg.substr(10).split("<br>")[0];
-				if (out) {
-					if (keyStore && keyStore.secretKey) {
-						msg = tpl('service', 'Keys aproved.');
-					} else if (keyStore) {
-						msg = tpl('service', 'Waiting keys ...');
-					}
-				} else {
-					if (keyStore) {
-						keyStore.getPartnerKey(msg);
-						msg = tpl('service', {msg:"Key genered!"});
-					} else {
-						this.secured[uid] = new VKKeyExchanging(uid);	
-						this.secured[uid].sendMyPublicKey();		
-						this.secured[uid].getPartnerKey(msg);
-						msg = tpl('service', {msg:"Key genered!"});
-					}
-				}
-			} else if (msg.substr(0, 15) == 'ENCRYPTED_BEGIN') {
-				if (keyStore && keyStore.secretKey) {
-					msg = msg.substr(15).split("<br>")[0];
-					try {
-						msg = tpl('encrypted', {msg:CryptoJS.AES.decrypt(atob(msg), keyStore.secretKey).toString(CryptoJS.enc.Utf8)});
-					} catch (_) {
-						
-					}
-				}	
-			}
-
 			var current = JSON.parse(localStorage.getItem('profile'));
 			var wrap = $('#dialog_' + uid), nwrap = wrap, _this = this;
 			if (wrap) {
@@ -206,7 +193,22 @@ var app = function() {
 						$('.im_history_chat').innerHTML = '';
 						if (data && data.response) {
 							data.response.items.reverse().forEach(function(msg) {
-								
+								if (msg.body.substr(0, 10) == 'ECDH_BEGIN') {
+									return;
+								}
+								if (msg.body.substr(0, 15) == 'ENCRYPTED_BEGIN') {
+									var keyStore = _this.secured[uid];
+									if (keyStore && keyStore.secretKey) {
+										msg.body = msg.body.substr(15).split("<br>")[0];
+										try {
+											msg.body = tpl('encrypted', {msg:CryptoJS.AES.decrypt(atob(msg.body), keyStore.secretKey).toString(CryptoJS.enc.Utf8)});
+										} catch (_) {
+											return;
+										}
+									} else {
+										return;
+									}
+								}
 								var wrap = document.createElement('div'), mwrap;
 								wrap.innerHTML = tpl('msg', {
 									"photo": msg.from_id == user.id ? user.photo_100 : current.photo_100,
