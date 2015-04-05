@@ -96,12 +96,12 @@ var app = function() {
 				else if (out && this.secured[this.opened_chat] && this.secured[this.opened_chat].secretKey) msg = tpl('service', {msg:"Key aproved!"});
 				else if (!out && this.secured[this.opened_chat]) {
 					var key = msg.substr(10).split("<br>======================")[0];
-				
+
 					this.secured[this.opened_chat].getPartnerKey(key);
 					msg = tpl('service', {msg:"Key genered ... "});
 				}else if (!out && !this.secured[this.opened_chat]) {
 					var key = msg.substr(10).split("<br>======================")[0];
-					var ke = new VKKeyExchanging(this.opened_chat);	
+					var ke = new VKKeyExchanging(uid);	
 					ke.sendMyPublicKey();		
 					ke.getPartnerKey(key);
 					this.secured[this.opened_chat] = ke;
