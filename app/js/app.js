@@ -163,7 +163,7 @@ var app = function() {
 			vk.api('users.get', {user_id:uid, fields:"online,photo_100"}, function(data) {
 				if (data && data.response) {
 					_this.opened_chat = uid;
-					console.error(_this.secured[uid], _this.secured[uid].serverKey);
+					console.error(_this.secured[uid]);
 					if (_this.secured[uid] && _this.secured[uid].serverKey) {
 						$('.locker').className = $('.locker').className.replace('locked', '') + " locked";
 					} else {
