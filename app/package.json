@@ -4,12 +4,13 @@
   "version": "0.1.0",
   "window": {
     "title": "Enigma",
-    "toolbar": true,
+    "toolbar": false,
     "frame": true,
     "width": 800,
     "height": 550,
     "min_width": 800,
     "min_height": 550,
-    "position": "center"
+    "position": "center",
+    "icon": "img/ico.png"
   }
 }
