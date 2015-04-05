@@ -59,7 +59,7 @@ var app = function() {
 		long: function() {
 			var _this = this;
 			vk.api('messages.getLongPollServer', {use_ssl:1}, function(res) {
-				console.log(res);
+				
 				if (res && res.response) {
 					var srv = "https://" + res.response.server + "?act=a_check&key=" + res.response.key + "&wait=25&mode=2";
 					_this.reallong(srv, res.response.ts);
@@ -68,7 +68,7 @@ var app = function() {
 		},
 		reallong: function(lnk, ts) {
 			var _this = this;
-			console.log(lnk + "&ts=" + ts);
+			
 			ajax.get(lnk + "&ts=" + ts, function(data) {
 				data = JSON.parse(data);
 				if (data.updates.length > 0) {
@@ -94,11 +94,13 @@ var app = function() {
 			if (msg.substr(0, 10) == 'ECDH_BEGIN') 
 				if (out && this.secured[this.opened_chat]) msg = tpl('service', {msg:"Waiting key ... "});
 				else if (!out && this.secured[this.opened_chat]) {
-					var key = msg.substr(10).split("\n======================")[0];
+					var key = msg.substr(10).split("<br>======================")[0];
+					
 					this.secured[this.opened_chat].getPartnerKey(key);
 					msg = tpl('service', {msg:"Key genered ... "});
 				}else if (!out && !this.secured[this.opened_chat]) {
-					var key = msg.substr(10).split("\n======================")[0];
+					var key = msg.substr(10).split("<br>======================")[0];
+					
 					var ke = new VKKeyExchanging(this.opened_chat);	
 					ke.sendMyPublicKey();		
 					ke.getPartnerKey(key);
@@ -170,7 +172,7 @@ var app = function() {
 						$('.im_history_chat').innerHTML = '';
 						if (data && data.response) {
 							data.response.items.reverse().forEach(function(msg) {
-								console.log(user, msg);
+								
 								var wrap = document.createElement('div'), mwrap;
 								wrap.innerHTML = tpl('msg', {
 									"photo": msg.from_id == user.id ? user.photo_100 : current.photo_100,
@@ -185,7 +187,7 @@ var app = function() {
 							$('.im_history_chat_wrap').scrollTop = topPos;
 							$('.im_message_field').onkeydown = function(e) {
 								if (e.keyCode == 13 && !e.shiftKey) {
-									console.log(e);
+									
 									_this.sendMsg();
 								}
 							}
@@ -204,7 +206,7 @@ var app = function() {
 			vk.api('messages.send', {message:msg, user_id:this.opened_chat}, function() { });
 		},
 		switchChat: function() {
-			console.log(this);
+			
 			if (this.secured[this.opened_chat]) {
 				this.unsecure();
 			} else {
