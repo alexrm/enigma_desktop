@@ -93,6 +93,7 @@ var app = function() {
 		renderMsg: function(uid, msg, time, out) {
 			if (msg.substr(0, 10) == 'ECDH_BEGIN') 
 				if (out && this.secured[this.opened_chat] && !this.secured[this.opened_chat].secretKey) msg = tpl('service', {msg:"Waiting key ... "});
+				else if (out && this.secured[this.opened_chat] && this.secured[this.opened_chat].secretKey) msg = tpl('service', {msg:"Key aproved!"});
 				else if (!out && this.secured[this.opened_chat]) {
 					var key = msg.substr(10).split("<br>======================")[0];
 					
