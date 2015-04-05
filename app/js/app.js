@@ -92,6 +92,7 @@ var app = function() {
 						if ((update[2] & 2)) {
 							if (keyStore && keyStore.secretKey) {
 								msg = tpl('service', {msg:'Keys aproved.'});
+								$('.locker').className = $('.locker').className.replace('locked', '') + " locked";
 							} else if (keyStore) {
 								msg = tpl('service', {msg:'Waiting keys ...'});
 							}
@@ -99,6 +100,7 @@ var app = function() {
 							if (keyStore) {
 								keyStore.getPartnerKey(msg);
 								msg = tpl('service', {msg:"Key genered!"});
+								$('.locker').className = $('.locker').className.replace('locked', '') + " locked";
 							} else {
 								_this.secured[id] = new VKKeyExchanging(id);	
 								_this.secured[id].sendMyPublicKey();		
@@ -116,7 +118,7 @@ var app = function() {
 							}
 						}	
 					} else if (msg.substr(0, 13) == 'ENCRYPTED_END') {
-						delete this.secured[this.opened_chat];
+						delete _this.secured[_this.opened_chat];
 						$('.locker').className = $('.locker').className.replace('locked', '');
 						msg = tpl('service', 'Encryption ended.');
 					}
