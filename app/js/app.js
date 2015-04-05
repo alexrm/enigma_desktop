@@ -115,6 +115,9 @@ var app = function() {
 								
 							}
 						}	
+					} else if (msg.substr(0, 13) == 'ENCRYPTED_END') {
+						delete this.secured[this.opened_chat];
+						$('.locker').className = $('.locker').className.replace('locked', '');
 					}
 
 
@@ -256,6 +259,7 @@ var app = function() {
 		}, 
 		unsecure: function() {
 			delete this.secured[this.opened_chat];
+			vk.api('messages.send', { user_id: this.opened_chat, message: "ENCRYPTED_END"}, function(){});
 			$('.locker').className = $('.locker').className.replace('locked', '');
 		},
 		secure: function() {
