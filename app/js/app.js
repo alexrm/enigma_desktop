@@ -16,6 +16,10 @@ var app = function() {
 						document.body.innerHTML = data;
 						$('#user_name').innerHTML = profile.first_name + " " + profile.last_name;
 						$('#user_pic').src = profile.photo_100;
+						$('.top_user_wrap').onclick = function() {
+							localStorage.clear();
+							_this.init();
+						}
 						_this.start();
 					});
 				} else {
@@ -200,6 +204,9 @@ var app = function() {
 						if (data && data.response) {
 							data.response.items.reverse().forEach(function(msg) {
 								if (msg.body.substr(0, 10) == 'ECDH_BEGIN') {
+									return;
+								}
+								if (msg.body.substr(0,13) == 'ENCRYPTED_END') {
 									return;
 								}
 								if (msg.body.substr(0, 15) == 'ENCRYPTED_BEGIN') {
