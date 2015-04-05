@@ -35,11 +35,19 @@
 	<script src="js/app.js"></script>
 
 	<script type="text/html" id="template-service">
-		<span>{{msg}}</span>
+		<span style="color:#74C424;">{{msg}}</span>
 	</script>
-
 	<script type="text/html" id="template-encrypted">
 		<span class="encrypted">{{msg}}</span>
+	</script>
+	<script type="text/html" id="template-attach-prev">
+		<span class="attach-prev">{{msg}}</span>
+	</script>
+	<script type="text/html" id="template-attach-sticker">
+		<img src="{{img}}" style="height:100px">
+	</script>
+	<script type="text/html" id="template-attach-wall">
+		<a href="http://vk.com/wall{{to_id}}_{{id}}" onclick="gui.Shell.openExternal(this.href);return false;" target="_blank">Wall post</a><br>
 	</script>
 	<script type="text/html" id="template-dialog">
 		<div class="im_dialog_wrap" id="dialog_{{user_id}}">
@@ -62,6 +70,7 @@
 			<div class="im_message_wrap">
 				<div class="im_message_peer">{{name}}</div>
 				<div class="im_message_text">{{text}} </div> 
+				<div class="im_message_attach">{{attachments}} </div> 
 			</div>		
 		</div>
 	</script>

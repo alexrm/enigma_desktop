@@ -45,6 +45,10 @@ var app = function() {
 						obj.photo = user.photo_100;
 						obj.name = user.first_name + " " + user.last_name;
 						
+						if (!obj.body.length && obj.attachments) {
+							obj.body = tpl('attach-prev', {msg:obj.attachments[0].type});
+						}
+
 						var wrap = document.createElement('div');
 							wrap.innerHTML = tpl('dialog', obj);
 						var nwrap = wrap.firstChild;
@@ -151,11 +155,13 @@ var app = function() {
 					var user = data.response[0];
 					if (_this.opened_chat == uid) {
 						var wrap2 = document.createElement('div'), mwrap2;
+
 						wrap2.innerHTML = tpl('msg', {
 							"photo": out ? current.photo_100 : user.photo_100,
 							"name": out ? current.first_name + " " + current.last_name : user.first_name + " " + user.last_name,
 							"text": msg,
-							"date": toDate(time, true)
+							"date": toDate(time, true),
+							"attachments": ""
 						});
 						mwrap2 = wrap2.firstChild;
 						$('.im_history_chat').appendChild(mwrap2);
@@ -203,6 +209,22 @@ var app = function() {
 						$('.im_history_chat').innerHTML = '';
 						if (data && data.response) {
 							data.response.items.reverse().forEach(function(msg) {
+								var attachments = '';
+								if (msg.attachments) {
+									msg.attachments.forEach(function(att) {
+										switch (att.type) {
+											case 'sticker':
+												attachments += tpl('attach-sticker', {img:att.sticker.photo_256})
+												break;
+											case 'wall':
+												console.log()
+												attachments += tpl('attach-wall', att.wall);
+												break;
+											default:
+												console.log(att);
+										}
+									});
+								}
 								if (msg.body.substr(0, 10) == 'ECDH_BEGIN') {
 									return;
 								}
@@ -227,13 +249,16 @@ var app = function() {
 									"photo": msg.from_id == user.id ? user.photo_100 : current.photo_100,
 									"name": msg.from_id == user.id ? user.first_name + " " + user.last_name : current.first_name + " " + current.last_name,
 									"text": msg.body,
-									"date": toDate(msg.date, true)
+									"date": toDate(msg.date, true),
+									"attachments": attachments
 								});
 								mwrap = wrap.firstChild;
 								$('.im_history_chat').appendChild(mwrap);
 							});
-							var topPos = $('.im_history_chat').lastChild.offsetTop;
-							$('.im_history_chat_wrap').scrollTop = topPos;
+							setTimeout(function(){
+								var topPos = $('.im_history_chat').lastChild.offsetTop;
+								$('.im_history_chat_wrap').scrollTop = topPos * 1000;
+							},100);
 							$('.im_message_field').onkeydown = function(e) {
 								if (e.keyCode == 13 && !e.shiftKey) {
 									
@@ -250,7 +275,7 @@ var app = function() {
 			});			 
 		},
 		sendMsg: function() {
-			var msg = $('.im_message_field').innerHTML.replace('<br>', "\n").replace(/<[^<>]+>/g, '');
+			var msg = $('.im_message_field').innerHTML.replace(/\<br\>/g, "\n").replace(/<[^<>]+>/g, '');
 			$('.im_message_field').innerHTML = '';
 			var keyStore = this.secured[this.opened_chat];
 			if (keyStore && keyStore.secretKey) {

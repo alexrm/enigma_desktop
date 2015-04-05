@@ -697,11 +697,18 @@ a {
 .encrypted {
   color: #74C424;
   padding-left: 20px;
-  background: url(img/lock_close.svg) no-repeat;
+  background: url(../img/lock_close.svg) no-repeat;
   background-size: 16px;
   background-position-y: 1px;
 }
 
 .top_user_wrap {
 	cursor: pointer;
+}
+
+.attach-prev {
+  padding-left: 20px;
+  background: url(../img/attach.svg) no-repeat;
+  background-size: 16px;
+  background-position-y: 1px;
 }
