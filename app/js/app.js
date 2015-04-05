@@ -102,7 +102,7 @@ var app = function() {
 							} else {
 								_this.secured[id] = new VKKeyExchanging(id);	
 								_this.secured[id].sendMyPublicKey();		
-								this.secured[id].getPartnerKey(msg);
+								_this.secured[id].getPartnerKey(msg);
 								msg = tpl('service', {msg:"Key genered!"});
 							}
 						}
@@ -242,7 +242,7 @@ var app = function() {
 			var keyStore = this.secured[this.opened_chat];
 			if (keyStore && keyStore.secretKey) {
 				var encryptedMsg = (CryptoJS.AES.encrypt(msg, keyStore.secretKey)).toString();	 
-				vk.api('messages.send', { user_id: this.opened_chat, message: "ECRYPTED" + btoa(encryptedMsg) + "\n======================\nIf you dont known WTF go to blablabla.com" }, function(r){ });  
+				vk.api('messages.send', { user_id: this.opened_chat, message: "ENCRYPTED_BEGIN" + btoa(encryptedMsg) + "\n======================\nIf you dont known WTF go to blablabla.com" }, function(r){ });  
 			} else {
 				vk.api('messages.send', {message:msg, user_id:this.opened_chat}, function() { });	
 			}						
