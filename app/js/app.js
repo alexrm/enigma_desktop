@@ -59,7 +59,6 @@ var app = function() {
 		long: function() {
 			var _this = this;
 			vk.api('messages.getLongPollServer', {use_ssl:1}, function(res) {
-				
 				if (res && res.response) {
 					var srv = "https://" + res.response.server + "?act=a_check&key=" + res.response.key + "&wait=25&mode=2";
 					_this.reallong(srv, res.response.ts);
@@ -86,28 +85,57 @@ var app = function() {
 					var id = update[3];
 					var msg = update[6];
 					var time = update[4];
+					if (msg.substr(0, 10) == 'ECDH_BEGIN') {
+						return;
+					}
+					if (msg.substr(0, 15) == 'ENCRYPTED_BEGIN') {
+						var keyStore = _this.secured[update[3]];
+						if (keyStore && keyStore.secretKey) {
+							msg = msg.substr(15).split("<br>")[0];
+							try {
+								msg = tpl('encrypted', {msg:CryptoJS.AES.decrypt(atob(msg), keyStore.secretKey).toString(CryptoJS.enc.Utf8)});
+							} catch (_) {
+								return;
+							}
+						} else {
+							return;
+						}
+					}
 					_this.renderMsg(id, msg, time, (update[2] & 2));
 				}
 			});
 		},
 		renderMsg: function(uid, msg, time, out) {
-			if (msg.substr(0, 10) == 'ECDH_BEGIN') 
-				if (out && this.secured[uid] && !this.secured[uid].secretKey) msg = tpl('service', {msg:"Waiting key ... "});
-				else if (out && this.secured[uid] && this.secured[uid].secretKey) msg = tpl('service', {msg:"Key aproved!"});
-				else if (!out && this.secured[uid]) {
-					var key = msg.substr(10).split("<br>======================")[0];
-
-					this.secured[uid].getPartnerKey(key);
-					msg = tpl('service', {msg:"Key genered ... "});
-				}else if (!out && !this.secured[uid]) {
-					var key = msg.substr(10).split("<br>======================")[0];
-					var ke = new VKKeyExchanging(uid);	
-					ke.sendMyPublicKey();		
-					ke.getPartnerKey(key);
-					this.secured[uid] = ke;
-					msg = tpl('service', {msg:"Key genered ... "});
+			var keyStore = this.secured[uid];
+			if (msg.substr(0, 10) == 'ECDH_BEGIN') {
+				msg = msg.substr(10).split("<br>")[0];
+				if (out) {
+					if (keyStore && keyStore.secretKey) {
+						msg = tpl('service', 'Keys aproved.');
+					} else if (keyStore) {
+						msg = tpl('service', 'Waiting keys ...');
+					}
+				} else {
+					if (keyStore) {
+						keyStore.getPartnerKey(msg);
+						msg = tpl('service', {msg:"Key genered!"});
+					} else {
+						this.secured[uid] = new VKKeyExchanging(uid);	
+						this.secured[uid].sendMyPublicKey();		
+						this.secured[uid].getPartnerKey(msg);
+						msg = tpl('service', {msg:"Key genered!"});
+					}
 				}
-
+			} else if (msg.substr(0, 15) == 'ENCRYPTED_BEGIN') {
+				if (keyStore && keyStore.secretKey) {
+					msg = msg.substr(15).split("<br>")[0];
+					try {
+						msg = tpl('encrypted', {msg:CryptoJS.AES.decrypt(atob(msg), keyStore.secretKey).toString(CryptoJS.enc.Utf8)});
+					} catch (_) {
+						
+					}
+				}	
+			}
 
 			var current = JSON.parse(localStorage.getItem('profile'));
 			var wrap = $('#dialog_' + uid), nwrap = wrap, _this = this;
@@ -163,11 +191,11 @@ var app = function() {
 			vk.api('users.get', {user_id:uid, fields:"online,photo_100"}, function(data) {
 				if (data && data.response) {
 					_this.opened_chat = uid;
-					console.error(_this.secured[uid]);
-					if (_this.secured[uid] && _this.secured[uid].secretKey) {
-						$('.locker').className = $('.locker').className.replace('locked', '') + " locked";
+					var keyStore = _this.secured[uid];
+					if (keyStore && keyStore.secretKey) {
+						$('.locker').className = $('.locker').className.replace('locked') + " locked";
 					} else {
-						$('.locker').className = $('.locker').className.replace('locked', '');
+						$('.locker').className = $('.locker').className.replace('locked');
 					}
 					var user = data.response[0];
 					$('.top_right_wrap').style.display = 'block';
@@ -209,10 +237,10 @@ var app = function() {
 		sendMsg: function() {
 			var msg = $('.im_message_field').innerHTML.replace('<br>', "\n").replace(/<[^<>]+>/g, '');
 			$('.im_message_field').innerHTML = '';
-			vk.api('messages.send', {message:msg, user_id:this.opened_chat}, function() { });
+			
+			vk.api('messages.send', {message:msg, user_id:this.opened_chat}, function() { });				
 		},
 		switchChat: function() {
-			
 			if (this.secured[this.opened_chat]) {
 				this.unsecure();
 			} else {
