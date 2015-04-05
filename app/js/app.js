@@ -233,6 +233,7 @@ var app = function() {
 
 app.init = function() {
 	var shared = new app();
+	app.shared = shared;
 	shared.init();
 }
 
