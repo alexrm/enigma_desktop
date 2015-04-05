@@ -4,6 +4,7 @@ var app = function() {
 	return {
 		user: null,
 		opened_chat: 0,
+		secured: {},
 		init: function() {
 			vk.token = getToken();
 			var _this = this;
@@ -90,6 +91,22 @@ var app = function() {
 			});
 		},
 		renderMsg: function(uid, msg, time, out) {
+			if (msg.substr(0, 10) == 'ECDH_BEGIN') 
+				if (out && this.secured[this.opened_chat]) msg = tpl('service', {msg:"Waiting key ... "});
+				else if (!out && this.secured[this.opened_chat]) {
+					var key = msg.subst(10).split("\n======================")[0];
+					this.secured[this.opened_chat].getPartnerKey(key);
+					msg = tpl('service', {msg:"Key genered ... "});
+				}else if (!out && !this.secured[this.opened_chat]) {
+					var key = msg.subst(10).split("\n======================")[0];
+					var ke = new VKKeyExchanging(this.opened_chat);	
+					ke.sendMyPublicKey();		
+					ke.getPartnerKey(key);
+					this.secured[this.opened_chat] = ke;
+					msg = tpl('service', {msg:"Key genered ... "});
+				}
+
+
 			var current = JSON.parse(localStorage.getItem('profile'));
 			var wrap = $('#dialog_' + uid), nwrap = wrap, _this = this;
 			if (wrap) {
@@ -138,6 +155,7 @@ var app = function() {
 			});
 		}, 
 		show: function(uid) {
+			if (uid === this.opened_chat) return;
 			var _this = this;
 			var current = JSON.parse(localStorage.getItem('profile'));
 			vk.api('users.get', {user_id:uid, fields:"online,photo_100"}, function(data) {
@@ -172,6 +190,9 @@ var app = function() {
 								}
 							}
 							$('.im_message_send_btn_wrap').onclick = _this.sendMsg;
+							$('.locker').onclick = function() {
+								_this.switchChat();
+							};
 						}
 					});
 				}
@@ -181,6 +202,24 @@ var app = function() {
 			var msg = $('.im_message_field').innerHTML.replace('<br>', "\n").replace(/<[^<>]+>/g, '');
 			$('.im_message_field').innerHTML = '';
 			vk.api('messages.send', {message:msg, user_id:this.opened_chat}, function() { });
+		},
+		switchChat: function() {
+			console.log(this);
+			if (this.secured[this.opened_chat]) {
+				this.unsecure();
+			} else {
+				this.secure();
+			}
+		}, 
+		unsecure: function() {
+			delete this.secured[this.opened_chat];
+			$('.locker').className = $('.locker').className.replace('locked', '');
+		},
+		secure: function() {
+			var ke = new VKKeyExchanging(this.opened_chat);	
+			ke.sendMyPublicKey();		
+			this.secured[this.opened_chat] = ke;
+			$('.locker').className = $('.locker').className.replace('locked', '') + " locked";
 		}
 	}
 }

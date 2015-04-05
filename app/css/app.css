@@ -684,3 +684,12 @@ a {
   background: rgba(0,0,0,0.61); /* Some darker color when you click it */
   -webkit-border-radius: 100px;
 }
+
+.locker {
+	cursor: pointer;
+	background-image: url(../img/lock_open.svg);
+}
+
+.locked {
+	background-image: url(../img/lock_close.svg);
+}
