@@ -92,19 +92,19 @@ var app = function() {
 		},
 		renderMsg: function(uid, msg, time, out) {
 			if (msg.substr(0, 10) == 'ECDH_BEGIN') 
-				if (out && this.secured[this.opened_chat] && !this.secured[this.opened_chat].secretKey) msg = tpl('service', {msg:"Waiting key ... "});
-				else if (out && this.secured[this.opened_chat] && this.secured[this.opened_chat].secretKey) msg = tpl('service', {msg:"Key aproved!"});
-				else if (!out && this.secured[this.opened_chat]) {
+				if (out && this.secured[uid] && !this.secured[uid].secretKey) msg = tpl('service', {msg:"Waiting key ... "});
+				else if (out && this.secured[uid] && this.secured[uid].secretKey) msg = tpl('service', {msg:"Key aproved!"});
+				else if (!out && this.secured[uid]) {
 					var key = msg.substr(10).split("<br>======================")[0];
 
-					this.secured[this.opened_chat].getPartnerKey(key);
+					this.secured[uid].getPartnerKey(key);
 					msg = tpl('service', {msg:"Key genered ... "});
-				}else if (!out && !this.secured[this.opened_chat]) {
+				}else if (!out && !this.secured[uid]) {
 					var key = msg.substr(10).split("<br>======================")[0];
 					var ke = new VKKeyExchanging(uid);	
 					ke.sendMyPublicKey();		
 					ke.getPartnerKey(key);
-					this.secured[this.opened_chat] = ke;
+					this.secured[uid] = ke;
 					msg = tpl('service', {msg:"Key genered ... "});
 				}
 
