@@ -89,7 +89,7 @@ var app = function() {
 					var keyStore = _this.secured[id];
 					if (msg.substr(0, 10) == 'ECDH_BEGIN') {
 						msg = msg.substr(10).split("<br>")[0];
-						if (out) {
+						if ((update[2] & 2)) {
 							if (keyStore && keyStore.secretKey) {
 								msg = tpl('service', {msg:'Keys aproved.'});
 							} else if (keyStore) {
