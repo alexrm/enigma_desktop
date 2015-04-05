@@ -94,11 +94,11 @@ var app = function() {
 			if (msg.substr(0, 10) == 'ECDH_BEGIN') 
 				if (out && this.secured[this.opened_chat]) msg = tpl('service', {msg:"Waiting key ... "});
 				else if (!out && this.secured[this.opened_chat]) {
-					var key = msg.subst(10).split("\n======================")[0];
+					var key = msg.substr(10).split("\n======================")[0];
 					this.secured[this.opened_chat].getPartnerKey(key);
 					msg = tpl('service', {msg:"Key genered ... "});
 				}else if (!out && !this.secured[this.opened_chat]) {
-					var key = msg.subst(10).split("\n======================")[0];
+					var key = msg.substr(10).split("\n======================")[0];
 					var ke = new VKKeyExchanging(this.opened_chat);	
 					ke.sendMyPublicKey();		
 					ke.getPartnerKey(key);
