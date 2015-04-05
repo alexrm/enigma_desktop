@@ -164,7 +164,7 @@ var app = function() {
 				if (data && data.response) {
 					_this.opened_chat = uid;
 					console.error(_this.secured[uid]);
-					if (_this.secured[uid] && _this.secured[uid].serverKey) {
+					if (_this.secured[uid] && _this.secured[uid].secretKey) {
 						$('.locker').className = $('.locker').className.replace('locked', '') + " locked";
 					} else {
 						$('.locker').className = $('.locker').className.replace('locked', '');
