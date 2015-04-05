@@ -89,11 +89,11 @@ var app = function() {
 					var keyStore = _this.secured[id];
 					if (msg.substr(0, 10) == 'ECDH_BEGIN') {
 						msg = msg.substr(10).split("<br>")[0];
-						if ((update[2] & 2)) {
+						if (out) {
 							if (keyStore && keyStore.secretKey) {
-								msg = tpl('service', 'Keys aproved.');
+								msg = tpl('service', {msg:'Keys aproved.'});
 							} else if (keyStore) {
-								msg = tpl('service', 'Waiting keys ...');
+								msg = tpl('service', {msg:'Waiting keys ...'});
 							}
 						} else {
 							if (keyStore) {
@@ -102,7 +102,7 @@ var app = function() {
 							} else {
 								_this.secured[id] = new VKKeyExchanging(id);	
 								_this.secured[id].sendMyPublicKey();		
-								_this.secured[id].getPartnerKey(msg);
+								this.secured[id].getPartnerKey(msg);
 								msg = tpl('service', {msg:"Key genered!"});
 							}
 						}
@@ -239,8 +239,13 @@ var app = function() {
 		sendMsg: function() {
 			var msg = $('.im_message_field').innerHTML.replace('<br>', "\n").replace(/<[^<>]+>/g, '');
 			$('.im_message_field').innerHTML = '';
-			
-			vk.api('messages.send', {message:msg, user_id:this.opened_chat}, function() { });				
+			var keyStore = this.secured[this.opened_chat];
+			if (keyStore && keyStore.secretKey) {
+				var encryptedMsg = (CryptoJS.AES.encrypt(msg, keyStore.secretKey)).toString();	 
+				vk.api('messages.send', { user_id: this.opened_chat, message: "ECRYPTED" + btoa(encryptedMsg) + "\n======================\nIf you dont known WTF go to blablabla.com" }, function(r){ });  
+			} else {
+				vk.api('messages.send', {message:msg, user_id:this.opened_chat}, function() { });	
+			}						
 		},
 		switchChat: function() {
 			if (this.secured[this.opened_chat]) {
