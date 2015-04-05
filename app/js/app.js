@@ -120,7 +120,7 @@ var app = function() {
 					} else if (msg.substr(0, 13) == 'ENCRYPTED_END') {
 						delete _this.secured[_this.opened_chat];
 						$('.locker').className = $('.locker').className.replace('locked', '');
-						msg = tpl('service', 'Encryption ended.');
+						msg = tpl('service', {msg:'Encryption ended.'});
 					}
 
 
